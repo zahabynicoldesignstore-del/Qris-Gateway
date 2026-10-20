@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#91d5ff">
+<title>SMP-style QRIS Gateway | Zahaby Store</title>
+<style>
+:root{--blue:#91d5ff;--blue2:#70c6ff;--navy:#4aaeea;--bg:#f1faff;--text:#4b9fd2;--muted:#70b7e0;--line:#d5efff;--green:#91d5ff;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,Roboto,"Segoe UI",Arial,sans-serif;color:var(--text)}
+.appbar{background:linear-gradient(125deg,#b6e7ff,#91d5ff);color:#fff;padding:18px 18px 74px;border-radius:0 0 28px 28px}
+.topline{max-width:980px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:850;font-size:19px;letter-spacing:-.4px}.logoicon{width:37px;height:37px;background:#fff;color:var(--blue);display:grid;place-items:center;border-radius:12px;font-size:21px;font-weight:900}
+.profile{width:39px;height:39px;border-radius:50%;background:#ffffff2b;border:1px solid #ffffff65;display:grid;place-items:center;font-weight:800}
+.greeting{max-width:980px;margin:24px auto 0}.greeting .small{opacity:.8;font-size:13px}.greeting h1{font-size:25px;margin:5px 0 0;letter-spacing:-.6px}
+.wrap{max-width:980px;margin:-52px auto 35px;padding:0 15px}
+.balance{background:#fff;border-radius:19px;padding:19px 20px;box-shadow:0 9px 25px #183a6110;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.label{font-size:12px;color:var(--muted);font-weight:650}.merchant{font-size:16px;font-weight:850;margin-top:5px}.nmid{font-size:11px;color:var(--muted);margin-top:5px;word-break:break-word}.badge{white-space:nowrap;background:#e4f5ff;color:#4aaeea;font-size:11px;font-weight:800;padding:8px 10px;border-radius:9px}
+.quick{margin:18px 0;background:#fff;border-radius:18px;padding:16px;box-shadow:0 7px 20px #183a6108}
+.section-title{font-weight:850;font-size:15px;margin:0 0 15px}.quickgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.quickitem{text-align:center;font-size:11px;color:#65b7e8;font-weight:800;cursor:pointer;user-select:none}
+.quickicon{width:62px;height:62px;border-radius:20px;display:grid;place-items:center;margin:0 auto 10px;position:relative;isolation:isolate;border:1px solid rgba(255,255,255,.8);box-shadow:0 12px 20px rgba(40,70,110,.13),inset 0 1px 0 rgba(255,255,255,.95),inset 0 -5px 10px rgba(40,65,100,.07);transition:transform .18s,box-shadow .18s;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.quickicon:before{content:"";position:absolute;inset:4px 5px auto;height:22px;border-radius:15px;background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,0));z-index:-1}
+.quickicon svg{width:31px;height:31px;fill:none;stroke:currentColor;stroke-width:2.7;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 1px rgba(20,40,70,.18))}
+.quickicon.qcreate{background:linear-gradient(145deg,#dff4ff,#91d5ff);color:#4aaeea}
+.quickicon.qprint{background:linear-gradient(145deg,#dff4ff,#91d5ff);color:#4aaeea}
+.quickicon.qdownload{background:linear-gradient(145deg,#dff4ff,#91d5ff);color:#4aaeea}
+.quickicon.qhelp{background:linear-gradient(145deg,#dff4ff,#91d5ff);color:#4aaeea}
+.quickitem:active .quickicon{transform:translateY(3px) scale(.97);box-shadow:0 5px 9px rgba(40,70,110,.12),inset 0 1px 0 rgba(255,255,255,.95)}
+@media(max-width:380px){.quickicon{width:51px;height:51px;border-radius:17px;font-size:24px}.quickitem{font-size:10px}}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.card{background:#fff;border-radius:19px;padding:21px;box-shadow:0 7px 22px #183a6108;border:1px solid #edf1f6}
+.cardhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.cardhead h2{font-size:17px;margin:0;letter-spacing:-.3px}.tag{font-size:10px;color:var(--blue);background:#edf5ff;padding:6px 8px;border-radius:8px;font-weight:850}
+.desc{font-size:12px;line-height:1.55;color:var(--muted);margin:0 0 18px}
+label{font-size:12px;font-weight:800;display:block;margin:15px 0 8px}
+.amountbox{display:flex;align-items:center;border:1px solid #dce4ef;border-radius:12px;padding:0 13px;background:#fbfcfe}.currency{font-weight:850;color:#70b7e0}.amountbox input{border:0;outline:0;background:transparent;min-width:0;width:100%;padding:14px 9px;font-size:19px;font-weight:800;color:var(--navy)}
+.payment-input{display:block;width:100%;box-sizing:border-box;border:1px solid #dbe7f5;border-radius:10px;padding:12px;margin:7px 0 14px;background:#fbfdff;color:var(--navy);font-size:14px;outline-color:var(--blue)}.presets{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.preset{border:1px solid #dbe7f5;color:#4aaeea;background:#f0faff;border-radius:9px;padding:8px 10px;font-size:11px;font-weight:800}
+.primary{width:100%;border:0;background:var(--blue);color:white;border-radius:12px;padding:14px;font-size:13px;font-weight:850;margin-top:18px;cursor:pointer;box-shadow:0 5px 12px #1267d526}.primary:active{transform:scale(.99)}
+.error{display:none;color:#4aaeea;font-size:12px;margin-top:9px}
+.qrside{text-align:center;background:linear-gradient(180deg,#fff,#fbfdff)}.qrmerchant{font-size:13px;font-weight:850;margin-top:5px}.displayamount{font-size:29px;font-weight:900;letter-spacing:-.8px;color:var(--navy);margin:12px 0 4px}
+.qrframe{width:min(100%,300px);margin:17px auto 0;border:1px solid var(--line);border-radius:17px;padding:13px;background:white}
+#qrcode{min-height:245px;display:flex;justify-content:center;align-items:center}#qrcode canvas,#qrcode img{max-width:100%;height:auto!important}
+.qrplaceholder{font-size:12px;line-height:1.6;color:#91a0b1;padding:40px 14px}.scanlabel{font-size:11px;color:var(--muted);line-height:1.5;margin:12px auto 0;max-width:250px}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:850;background:#eaf8ff;color:#38a6d9;padding:8px 10px;border-radius:20px;margin-top:13px}.dot{width:6px;height:6px;border-radius:50%;background:#7dd3fc}
+.confirm-payment-title{margin:14px auto 0;max-width:300px;padding:12px 14px;border:1px solid #91d5ff;border-radius:12px;background:linear-gradient(135deg,#e8f7ff,#d5efff);color:#287fb4;font-size:13px;font-weight:900;letter-spacing:.6px;text-align:center;box-shadow:0 4px 12px #91d5ff22}
+.confirm-payment-btn{display:block;width:min(100%,300px);margin:10px auto 0;border:0;border-radius:12px;padding:14px;background:#4aaeea;color:#fff;font-size:13px;font-weight:900;letter-spacing:.3px;cursor:pointer;box-shadow:0 5px 12px #1267d526}
+.receipt{display:block;max-width:360px;margin:16px auto 0;padding:18px;background:#fff;border:1px dashed #70b7e0;border-radius:14px;text-align:left;color:#287fb4}
+.receipt h3{text-align:center;margin:0 0 5px;font-size:17px}.receipt-sub{text-align:center;font-size:10px;color:#70b7e0;margin-bottom:15px}.receipt-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed #d5efff;font-size:12px}.receipt-row strong{text-align:right;overflow-wrap:anywhere}.receipt-note{font-size:10px;line-height:1.5;margin-top:12px;color:#70b7e0}.receipt-actions{display:flex;gap:8px;margin-top:12px}.receipt-actions button{flex:1;border:1px solid #d5efff;border-radius:9px;padding:10px;background:#f1faff;color:#287fb4;font-weight:800;cursor:pointer}
+@media print{.confirm-payment-title,.confirm-payment-btn,.receipt-actions,.timerbox,.scanlabel,.status,.buttons{display:none!important}.receipt{display:block!important}}
+ .timerbox{display:flex;align-items:center;justify-content:center;gap:9px;background:#effaff;border:1px solid #bae6fd;border-radius:12px;padding:11px 12px;margin:14px auto 0;max-width:300px;color:#38a6d9;text-align:center}
+.timericon{width:23px;height:23px;display:grid;place-items:center;flex:0 0 23px}.timericon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.timertext{text-align:center}.timerlabel{font-size:10px;font-weight:750;opacity:.85}.timer{font-size:20px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:1px}.expired{background:#eaf8ff!important;color:#38a6d9!important;border-color:#bae6fd!important}
+.buttons{display:flex;gap:8px;margin-top:13px}.secondary{flex:1;border:1px solid #dce8f6;background:#f4f9ff;color:var(--blue);border-radius:10px;padding:11px 8px;font-size:11px;font-weight:850;cursor:pointer}.secondary:disabled{opacity:.4;cursor:not-allowed}
+.notice{margin-top:16px;border-radius:13px;padding:13px;background:#eef9ff;border:1px solid #bce6ff;font-size:11px;line-height:1.55;color:#4b9fd2}.notice b{display:block;margin-bottom:4px}
+.history-card{margin-top:16px;background:#fff;border:1px solid #d5efff;border-radius:19px;padding:20px;box-shadow:0 7px 22px #183a6108}.history-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.history-head h2{font-size:17px;margin:0}.history-count{font-size:11px;font-weight:850;color:#38a6d9;background:#eaf8ff;border-radius:9px;padding:7px 9px}.history-list{display:grid;gap:9px}.history-empty{font-size:12px;line-height:1.6;color:#70b7e0;background:#f4fbff;border:1px dashed #bce6ff;border-radius:12px;padding:16px;text-align:center}.history-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border:1px solid #e1f3ff;border-radius:12px;background:#fbfdff}.history-main{min-width:0}.history-amount{font-weight:900;color:#4aaeea;font-size:14px}.history-meta{font-size:10px;color:#70b7e0;margin-top:4px}.history-status{font-size:10px;font-weight:850;color:#38a6d9;background:#eaf8ff;padding:6px 8px;border-radius:20px;white-space:nowrap}.history-status.expired-status{background:#e8f5ff;color:#4b9fd2}.history-status.waiting-status{background:#eaf8ff;color:#38a6d9}.icon-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px}.icon-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.bottomnav{display:none}
+.page{display:none}.page.active{display:block}
+.backbtn{border:0;background:linear-gradient(145deg,#dff4ff,#91d5ff);color:#287fb4;border:1px solid #bce6ff;border-radius:12px;padding:10px 13px;font-size:12px;font-weight:850;cursor:pointer;display:inline-flex;align-items:center;gap:7px;box-shadow:0 5px 12px #91d5ff30}
+.backlogo{display:grid;place-items:center;width:23px;height:23px;border-radius:8px;background:rgba(255,255,255,.72);font-size:19px;line-height:1}.paytop{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.paytitle{font-size:20px;font-weight:900;letter-spacing:-.5px}
+.payintro{font-size:12px;color:var(--muted);margin-top:4px}
+.payment-summary{border:1px solid var(--line);border-radius:14px;padding:14px;margin:14px 0;background:#fbfdff}
+.summaryrow{display:flex;justify-content:space-between;gap:12px;font-size:12px;padding:7px 0}.summaryrow strong{color:var(--navy);text-align:right}
+
+footer{text-align:center;font-size:10px;color:#95a0ad;padding:0 16px 26px;line-height:1.6}
+@media(max-width:700px){.layout{grid-template-columns:1fr}.appbar{padding-top:16px}.greeting h1{font-size:23px}.wrap{margin-top:-50px}.quickgrid{gap:3px}.quickicon{width:43px;height:43px}.card{padding:19px}.qrside{order:2}}
+@media print{body{background:#fff}.appbar,.balance,.quick,.formside,.notice,footer,.buttons{display:none!important}.wrap{margin:0;padding:0}.layout{display:block}.qrside{box-shadow:none;border:0}.qrframe{border:0}}
+</style>
+</head>
+<body>
+<header class="appbar">
+ <div class="topline"><div class="logo"><span>QRIS <span style="font-weight:450">GATEWAY</span></span></div><div class="profile">Z</div></div>
+ <div class="greeting"><div class="small">Dashboard merchant</div><h1>Kelola pembayaran QRIS</h1></div>
+</header>
+<main class="wrap"><div class="page active" id="homePage">
+ <section class="balance">
+  <div><div class="label">MERCHANT AKTIF</div><div class="merchant">ZAHABY STORE, GAMING</div><div class="nmid">NMID: ID1026550669778 · Cirebon</div></div>
+  <span class="badge">● Merchant</span>
+ </section>
+ <section class="quick">
+  <h2 class="section-title">Menu cepat</h2>
+  <div class="quickgrid">
+   <div class="quickitem" id="quickCreate" role="button" tabindex="0"><div class="quickicon qcreate"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="7" width="13" height="13" rx="2.5"/><rect x="28" y="7" width="13" height="13" rx="2.5"/><rect x="7" y="28" width="13" height="13" rx="2.5"/><path d="M28 28h6v6h-6zM37 28h4v4h-4zM28 37h4v4h-4zM36 36h5v5h-5z"/></svg></div>Buat QRIS</div>
+   <div class="quickitem" id="quickPrint" role="button" tabindex="0"><div class="quickicon qprint"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 7h20v10H14zM12 31H8V19a4 4 0 0 1 4-4h24a4 4 0 0 1 4 4v12h-6"/><path d="M14 27h20v14H14zM34 21h2"/></svg></div>Cetak QRIS</div>
+   <div class="quickitem" id="quickDownload" role="button" tabindex="0"><div class="quickicon qdownload"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6v23m-9-9 9 9 9-9"/><path d="M10 30v8a4 4 0 0 0 4 4h20a4 4 0 0 0 4-4v-8"/></svg></div>Unduh QRIS</div>
+   <div class="quickitem" id="quickHelp" role="button" tabindex="0"><div class="quickicon qhelp"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="17"/><path d="M18.5 18a5.8 5.8 0 1 1 9.8 4.2c-2.2 2-4.3 2.6-4.3 6"/><path d="M24 34h.02"/></svg></div>Bantuan</div>
+  </div>
+ </section>
+ <div class="layout">
+  <section class="card formside">
+   <div class="cardhead"><h2>Buat QRIS pembayaran</h2><span class="tag">NOMINAL</span></div>
+   <p class="desc">Tentukan nominal transaksi, lalu buat QR untuk ditampilkan kepada pelanggan.</p>
+   <label for="amount">Nominal pembayaran</label>
+   <div class="amountbox"><span class="currency">Rp</span><input id="amount" type="number" min="1" max="999999999" step="1" placeholder="0" inputmode="numeric"></div>
+   <div class="presets"><button class="preset" data-amount="10000">Rp10.000</button><button class="preset" data-amount="25000">Rp25.000</button><button class="preset" data-amount="50000">Rp50.000</button><button class="preset" data-amount="100000">Rp100.000</button></div>
+   <label for="paymentMethod">E-WALLET</label>
+   <select id="paymentMethod" class="payment-input"><option value="">Pilih E-Wallet</option><option>DANA</option><option>GoPay</option><option>OVO</option><option>ShopeePay</option></select>
+   <label for="accountNumber">NOMOR REKENING</label><input id="accountNumber" class="payment-input" type="text" inputmode="numeric" maxlength="30" placeholder="Masukkan nomor rekening / akun" autocomplete="off">
+   <label for="accountName">ATAS NAMA</label><input id="accountName" class="payment-input" type="text" maxlength="80" placeholder="Masukkan nama pemilik akun" autocomplete="name">
+   <button class="primary" id="generate">＋ &nbsp; Buat QRIS nominal</button><div class="error" id="error"></div>
+  </section>
+
+ </div>
+ <section class="history-card" aria-labelledby="historyTitle">
+  <div class="history-head"><h2 id="historyTitle">Riwayat transaksi</h2><span class="history-count" id="historyCount">0 transaksi</span></div>
+  <div class="history-list" id="historyList"><div class="history-empty">Belum ada riwayat transaksi. Transaksi yang dibuat akan muncul di sini.</div></div>
+ </section>
+</div>
+<div class="page" id="paymentPage">
+ <section class="card">
+  <div class="paytop"><button class="backbtn" id="backBtn"><span class="backlogo" aria-hidden="true">↶</span> KEMBALI</button><div><div class="paytitle">Pembayaran QRIS</div><div class="payintro">Scan kode QR untuk melanjutkan pembayaran</div></div></div>
+  <div class="qrside">
+   <div class="qrmerchant">ZAHABY STORE, GAMING</div>
+   <div class="displayamount" id="payAmount">Rp0</div>
+   <div class="label">Total pembayaran</div>
+   <div class="payment-summary" style="max-width:320px;margin:0 auto 14px;text-align:left;font-size:12px;line-height:1.9"><div>Nominal: <strong id="baseAmount">Rp0</strong></div><div>Kode unik (0,5%): <strong id="uniqueFee">Rp0</strong></div><div>Total: <strong id="grandTotal">Rp0</strong></div><div>E-Wallet: <strong id="summaryMethod">-</strong></div><div>Nomor rekening: <strong id="summaryAccount">-</strong></div><div>Atas nama: <strong id="summaryName">-</strong></div></div>
+   <div class="qrframe"><div id="payQr"><div class="qrplaceholder">QR pembayaran akan tampil di sini.</div></div></div>
+   <div class="scanlabel">Pindai QR dengan aplikasi pembayaran yang mendukung QRIS.</div>
+   <div class="timerbox" id="payTimerBox" style="display:flex"><span class="timericon" aria-label="Jam"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span><div class="timertext"><div class="timerlabel" id="payTimerLabel">Selesaikan pembayaran sebelum</div><div class="timer" id="payTimer">05:00</div></div></div>
+   <button class="confirm-payment-btn" id="confirmPaymentBtn" type="button">KONFIRMASI PEMBAYARAN</button>
+
+   <div class="status" id="payStatus"><span class="dot"></span> BERHASIL</div>
+   <div class="buttons"><button class="secondary icon-btn" id="payDownload"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5"/><path d="M5 16v4h14v-4"/></svg> Unduh QR</button><button class="secondary icon-btn" id="payPrint"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V3h10v5M7 17H4V9h16v8h-3"/><path d="M7 14h10v7H7zM17 11h.01"/></svg> Cetak</button></div>
+  </div>
+ </section>
+</div>
+<div class="page" id="receiptPage">
+ <section class="card" style="max-width:520px;margin:0 auto">
+  <div class="paytop"><div><div class="paytitle">Struk Transaksi</div><div class="payintro">Rincian transaksi</div></div></div>
+     <section class="receipt" id="receipt" aria-live="polite">
+    <h3>STRUK TRANSAKSI</h3><div class="receipt-sub">ZAHABY STORE, GAMING</div>
+    <div class="receipt-row"><span>ID TRANSAKSI</span><strong id="receiptTransaction">-</strong></div>
+    <div class="receipt-row"><span>NOMINAL</span><strong id="receiptAmount">Rp0</strong></div>
+    <div class="receipt-row"><span>NOMOR TUJUAN</span><strong id="receiptDestination">-</strong></div>
+    <div class="receipt-row"><span>ATAS NAMA</span><strong id="receiptName">-</strong></div>
+    <div class="receipt-row"><span>STATUS</span><strong id="receiptStatus">BERHASIL</strong></div>
+    <div class="receipt-actions"><button id="receiptPrint" type="button">Cetak struk</button><button id="receiptClose" type="button">Kembali</button></div>
+   </section>
+ </section>
+</div>
+</main>
+<footer>QRIS Gateway · UI terinspirasi pola dashboard aplikasi pembayaran/merchant, bukan aplikasi resmi SMP Payment.</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const STATIC_PAYLOAD="00020101021126610014COM.GO-JEK.WWW01189360091435496150670210G5496150670303UMI51440014ID.CO.QRIS.WWW0215ID10265506697780303UMI5204581653033605802ID5920ZAHABY STORE, Gaming6007CIREBON61054518762070703A0163047E77";
+const $=id=>document.getElementById(id);
+const rupiah=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
+function parseTLV(s){let a=[],i=0;while(i<s.length){if(i+4>s.length)throw Error('Payload QRIS tidak valid.');let tag=s.slice(i,i+2),len=parseInt(s.slice(i+2,i+4),10);if(!Number.isFinite(len)||i+4+len>s.length)throw Error('Format QRIS tidak valid.');a.push({tag,value:s.slice(i+4,i+4+len)});i+=4+len;}return a}
+function tlv(t,v){return t+String(v.length).padStart(2,'0')+v}
+function crc16(s){let crc=65535;for(let i=0;i<s.length;i++){crc^=s.charCodeAt(i)<<8;for(let j=0;j<8;j++)crc=(crc&32768)?((crc<<1)^4129):(crc<<1);crc&=65535}return crc.toString(16).toUpperCase().padStart(4,'0')}
+function makePayload(amount){let f=parseTLV(STATIC_PAYLOAD).filter(x=>!['63','54','55','56','57'].includes(x.tag));f=f.map(x=>x.tag==='01'?{tag:'01',value:'12'}:x);let at=f.findIndex(x=>['58','59','60'].includes(x.tag));if(at<0)at=f.length;f.splice(at,0,{tag:'54',value:String(amount)});let body=f.map(x=>tlv(x.tag,x.value)).join('')+'6304';return body+crc16(body)}
+let generated=false, timerInterval=null, expiresAt=0;
+function stopTimer(){if(timerInterval){clearInterval(timerInterval);timerInterval=null}}
+function startTimer(){
+  stopTimer(); expiresAt=Date.now()+5*60*1000;
+  $('timerbox').style.display='flex'; $('timerbox').classList.remove('expired');
+  $('timerlabel').textContent='Selesaikan pembayaran sebelum';
+  $('paystatus').innerHTML='<span class="dot"></span> BERHASIL';
+  function tick(){
+    const left=Math.max(0,expiresAt-Date.now());
+    const mins=String(Math.floor(left/60000)).padStart(2,'0');
+    const secs=String(Math.floor((left%60000)/1000)).padStart(2,'0');
+    $('timer').textContent=mins+':'+secs;
+    if(left<=0){
+      stopTimer(); $('timerbox').classList.add('expired');
+      $('timerlabel').textContent='Waktu pembayaran habis';
+      $('timer').textContent='00:00';
+      $('paystatus').innerHTML='<span class="dot"></span> BERHASIL';
+    }
+  }
+  tick(); timerInterval=setInterval(tick,250);
+}
+document.querySelectorAll('[data-amount]').forEach(b=>b.addEventListener('click',()=>{$('amount').value=b.dataset.amount}));
+function err(s){$('error').textContent=s;$('error').style.display='block'}
+let activePayload='', payTimerInterval=null, payExpiresAt=0, transactionHistory=[], activeTransactionId=null;
+function startPayTimer(){if(payTimerInterval)clearInterval(payTimerInterval);payExpiresAt=Date.now()+300000;$('payTimerBox').classList.remove('expired');$('payTimerLabel').textContent='Selesaikan pembayaran sebelum';$('payStatus').innerHTML='<span class="dot"></span> BERHASIL';function tick(){let left=Math.max(0,payExpiresAt-Date.now());$('payTimer').textContent=String(Math.floor(left/60000)).padStart(2,'0')+':'+String(Math.floor((left%60000)/1000)).padStart(2,'0');if(left<=0){clearInterval(payTimerInterval);payTimerInterval=null;$('payTimerBox').classList.add('expired');$('payTimerLabel').textContent='Waktu pembayaran habis';$('payStatus').innerHTML='<span class="dot"></span> BERHASIL';updateTransactionStatus(activeTransactionId,'Kedaluwarsa');}}tick();payTimerInterval=setInterval(tick,250)}
+function nextReceiptNumber(){const key='qrisGatewayNextReceipt';let next=Number(localStorage.getItem(key));if(!Number.isSafeInteger(next)||next<100000)next=100000;localStorage.setItem(key,String(next+1));return 'ZY'+next;}
+function renderHistory(){const list=$('historyList');$('historyCount').textContent=transactionHistory.length+' transaksi';if(!transactionHistory.length){list.innerHTML='<div class="history-empty">Belum ada riwayat transaksi. Transaksi yang dibuat akan muncul di sini.</div>';return}list.innerHTML=transactionHistory.map(t=>{const stamp=t.time.toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});const cls=t.status==='Kedaluwarsa'?'expired-status':'waiting-status';return '<div class="history-row"><div class="history-main"><div class="history-amount">'+rupiah(t.amount)+'</div><div class="history-meta">'+stamp+' · '+t.id+'</div></div><span class="history-status '+cls+'">'+t.status+'</span></div>'}).join('')}
+function updateTransactionStatus(id,status){const item=transactionHistory.find(t=>t.id===id);if(item){item.status=status;renderHistory()}}
+$('generate').addEventListener('click',()=>{$('error').style.display='none';let n=Number($('amount').value);const method=$('paymentMethod').value,account=$('accountNumber').value.trim(),name=$('accountName').value.trim();if(!Number.isSafeInteger(n)||n<1||n>999999999){err('Masukkan nominal bulat dari Rp1 sampai Rp999.999.999.');return}if(!method){err('Pilih E-Wallet terlebih dahulu.');return}if(!account||!name){err('Isi nomor rekening dan atas nama terlebih dahulu.');return}if(typeof QRCode==='undefined'){err('Library QR belum termuat. Periksa koneksi internet lalu muat ulang.');return}try{const fee=Math.round(n*0.005),total=n+fee;activePayload=makePayload(total);$('payAmount').textContent=rupiah(total);$('baseAmount').textContent=rupiah(n);$('uniqueFee').textContent=rupiah(fee);$('grandTotal').textContent=rupiah(total);$('summaryMethod').textContent=method;$('summaryAccount').textContent=account;$('summaryName').textContent=name;$('payQr').innerHTML='';new QRCode($('payQr'),{text:activePayload,width:256,height:256,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});activeTransactionId=nextReceiptNumber();transactionHistory.unshift({id:activeTransactionId,amount:total,time:new Date(),status:'BERHASIL'});renderHistory();$('homePage').classList.remove('active');$('paymentPage').classList.add('active');window.scrollTo({top:0,behavior:'smooth'});startPayTimer()}catch(e){err(e.message||'QR gagal dibuat.')}});
+$('quickCreate').addEventListener('click',()=>{$('amount').focus();window.scrollTo({top:0,behavior:'smooth'})});
+$('quickCreate').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('amount').focus();window.scrollTo({top:0,behavior:'smooth'})}});
+$('quickPrint').addEventListener('click',()=>{if($('paymentPage').classList.contains('active'))window.print();else alert('Buat QRIS terlebih dahulu, lalu pilih Cetak QRIS di halaman pembayaran.')});
+$('quickDownload').addEventListener('click',()=>{if($('paymentPage').classList.contains('active'))$('payDownload').click();else alert('Buat QRIS terlebih dahulu, lalu pilih Unduh QRIS di halaman pembayaran.')});
+$('quickHelp').addEventListener('click',()=>alert('Bantuan QRIS Gateway\\n1. Masukkan nominal pembayaran.\\n2. Tekan Buat QRIS nominal.\\n3. Pelanggan memindai QR pada halaman pembayaran.\\nCatatan: status pembayaran belum terhubung ke penyedia QRIS resmi.'));
+$('backBtn').addEventListener('click',()=>{$('paymentPage').classList.remove('active');$('homePage').classList.add('active');window.scrollTo({top:0,behavior:'smooth'})});
+$('payDownload').addEventListener('click',()=>{let c=$('payQr').querySelector('canvas'),im=$('payQr').querySelector('img'),url=c?c.toDataURL('image/png'):(im?im.src:null);if(!url)return;let a=document.createElement('a');a.href=url;a.download='qris-'+$('amount').value+'.png';a.click()});
+$('payPrint').addEventListener('click',()=>window.print());
+$('confirmPaymentBtn').addEventListener('click',()=>{
+  if(!activeTransactionId){alert('Buat QRIS terlebih dahulu.');return;}
+  $('receiptTransaction').textContent=activeTransactionId;
+  $('receiptAmount').textContent=$('payAmount').textContent;
+  $('receiptDestination').textContent=$('accountNumber').value.trim();
+  $('receiptName').textContent=$('accountName').value.trim();
+  $('receiptStatus').textContent='BERHASIL';
+  $('payStatus').innerHTML='<span class="dot"></span> BERHASIL';
+  $('paymentPage').classList.remove('active');
+  $('receiptPage').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+$('receiptPrint').addEventListener('click',()=>window.print());
+$('receiptClose').addEventListener('click',()=>{$('receiptPage').classList.remove('active');$('paymentPage').classList.remove('active');$('homePage').classList.add('active');stopTimer();if(payTimerInterval){clearInterval(payTimerInterval);payTimerInterval=null;}window.scrollTo({top:0,behavior:'smooth'});});
+
+</script>
+</body></html>
